@@ -1,49 +1,48 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Provider, connect } from 'react-redux';
 
 import Nav from './nav';
 import TaskForm from './task-form';
 import List from './list';
-import User from './user';
+import Users from './user';
 
 // ATTRIBUTION: react code and set up steps based off of Professor Tuck's
-// 4550 lecture notes
+// 4550 lecture notes for single page applications and use of redux
 
-export default function tracker_init() {
-  let root = document.getElementById('root');
-  ReactDOM.render(<Tracker />, root);
+export default function tracker_init(store) {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Tracker state={store.getState()} />
+    </Provider>,
+    document.getElementById('root'),
+  );
 }
 
-class Tracker extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
 
-  render() {
+let Tracker = connect((state) => state)((props) => {
     return (
       <Router>
         <div>
           <Nav />
             <Route path="/" exact={true} render={() =>
               <div>
-                <List tasks={this.state.posts} />
+                <TaskForm />
               </div>
             } />
           <Route path="/list" exact={true} render={() =>
-              <TaskForm users={this.state.users} />
+              <List tasks={props.tasks} />
             } />
             <Route path="/users" exact={true} render={() =>
-              <Users users={this.state.users} />
+              <Users users={props.users} />
             } />
             <Route path="/users/:user_id" render={({match}) =>
-              <List tasks={_.filter(this.state.posts, (pp) =>
+              <List tasks={_.filter(props.tasks, (pp) =>
                 match.params.user_id == pp.user.id )
               } />
             } />
         </div>
       </Router>
     );
-  }
-}
+  });

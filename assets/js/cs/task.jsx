@@ -6,7 +6,6 @@ export default function Task(params) {
   return <Card>
     <CardBody>
       <div>
-        <p>Posted by <b>{ task.user.name }</b></p>
         <p>{ task.title }</p>
         <p>{ task.body }</p>
         <p>{ task.length }</p>
